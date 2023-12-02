@@ -1,3 +1,5 @@
+use crate::common::Lexer;
+
 
 pub fn puzzle_1(input: &str) -> usize {
     let mut result = 0;
@@ -6,7 +8,10 @@ pub fn puzzle_1(input: &str) -> usize {
 
     for line in input.lines() {
         digits.clear();
-        for c in line.chars() {
+
+        let mut lexer = Lexer::new(line);
+
+        while let Some(c) = lexer.advance() {
             if c.is_ascii_digit() {
                 digits.push((c as u8) - b'0');
             }
@@ -44,30 +49,7 @@ pub fn puzzle_2(input: &str) -> usize {
         ("eight", 8),
         ("nine", 9),
     ];
-
-    struct State<'l> {
-        line: &'l str,
-        index: usize,
-    }
-
-    impl<'l> State<'l> {
-        fn new(line: &'l str) -> Self {
-            Self {
-                line,
-                index: 0,
-            }
-        }
-
-        fn peek(&self) -> Option<char> {
-            self.line[self.index..].chars().next()
-        }
-
-        fn advance(&mut self) -> Option<char> {
-            let c = self.peek()?;
-            self.index += c.len_utf8();
-            Some(c)
-        }
-
+    impl<'l> Lexer<'l> {
         fn next_digit(&mut self) -> Option<u8> {
             loop {
                 let c = self.peek()?;
@@ -78,11 +60,11 @@ pub fn puzzle_2(input: &str) -> usize {
                         (c as u8) - b'0'
                     },
                     _ => {
-                        let rest = &self.line[self.index..];
+                        let rest = self.rest();
                         
                         for (digit, value) in DIGITS.iter().copied() {
                             if rest.starts_with(digit) {
-                                self.index += 1;
+                                self.advance();
                                 return Some(value);
                             }
                         }
@@ -97,7 +79,7 @@ pub fn puzzle_2(input: &str) -> usize {
 
     for line in input.lines() {
         digits.clear();
-        let mut state = State::new(line);
+        let mut state = Lexer::new(line);
 
         while let Some(digit) = state.next_digit() {
             digits.push(digit);
