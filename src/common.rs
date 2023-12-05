@@ -49,6 +49,26 @@ impl<'l> Lexer<'l> {
         }
     }
     
+    pub fn parse_word(&mut self) -> Option<&'l str> {
+        let start = self.index;
+
+        while let Some(c) = self.peek() {
+            if c.is_ascii_alphabetic() {
+                self.advance();
+            } else {
+                break;
+            }
+        }
+
+        let end = self.index;
+
+        if start == end {
+            return None;
+        }
+
+        Some(&self.source[start..end])
+    }
+
     pub fn parse_int(&mut self) -> Option<usize> {
         let start = self.index;
         

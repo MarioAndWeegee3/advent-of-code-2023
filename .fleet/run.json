@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "type": "cargo",
+            "name": "Run puzzle",
+            "cargoArgs": ["run"],
+            "executableArgs": ["5", "1"],
+        },
+        
+    ]
+}
