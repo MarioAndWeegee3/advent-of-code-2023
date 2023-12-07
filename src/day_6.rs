@@ -1,5 +1,3 @@
-use rayon::prelude::*;
-
 use crate::common::Lexer;
 
 pub fn puzzle_1(input: &str) -> usize {

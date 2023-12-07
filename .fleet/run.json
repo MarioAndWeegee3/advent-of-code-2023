@@ -4,7 +4,7 @@
             "type": "cargo",
             "name": "Run puzzle",
             "cargoArgs": ["run"],
-            "executableArgs": ["5", "1"],
+            "executableArgs": ["7", "1"],
         },
         
     ]
