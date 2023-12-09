@@ -2,31 +2,40 @@ use crate::common::Lexer;
 
 pub fn puzzle_1(input: &str) -> usize {
     let races = parse_races(input, |lexer| lexer.parse_int()).unwrap();
-    
-    races.into_iter()
-        .map(|Race { time, distance_record }| {
-            (0..time)
-                .into_iter()
-                .filter_map(|held| {
-                    let speed = held;
-                    let remaining_time = time - held;
-                    
-                    let distance = speed * remaining_time;
-                    
-                    if distance > distance_record {
-                        Some(1)
-                    } else {
-                        None
-                    }
-                })
-                .sum::<usize>()
-        })
+
+    races
+        .into_iter()
+        .map(
+            |Race {
+                 time,
+                 distance_record,
+             }| {
+                (0..time)
+                    .into_iter()
+                    .filter_map(|held| {
+                        let speed = held;
+                        let remaining_time = time - held;
+
+                        let distance = speed * remaining_time;
+
+                        if distance > distance_record {
+                            Some(1)
+                        } else {
+                            None
+                        }
+                    })
+                    .sum::<usize>()
+            },
+        )
         .fold(1, |a, b| a * b)
 }
 
 pub fn puzzle_2(input: &str) -> usize {
-    let Race { time, distance_record } = parse_races(input, parse_int_with_spaces).unwrap()[0];
-    
+    let Race {
+        time,
+        distance_record,
+    } = parse_races(input, parse_int_with_spaces).unwrap()[0];
+
     (0..time)
         .into_iter()
         .filter_map(|held| {
@@ -83,7 +92,7 @@ fn parse_races(source: &str, parse_int: fn(&mut Lexer) -> Option<usize>) -> Opti
 fn parse_int_with_spaces(lexer: &mut Lexer) -> Option<usize> {
     let mut result = 0;
     let mut digits = 0;
-    
+
     while let Some(c) = lexer.peek() {
         if c == ' ' {
             lexer.advance();
@@ -96,10 +105,10 @@ fn parse_int_with_spaces(lexer: &mut Lexer) -> Option<usize> {
             break;
         }
     }
-    
+
     if digits == 0 {
         return None;
     }
-    
+
     Some(result)
 }

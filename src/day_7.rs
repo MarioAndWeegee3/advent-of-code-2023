@@ -1,4 +1,8 @@
-use std::{cmp::{Ordering, Reverse}, collections::HashMap, fmt::Display};
+use std::{
+    cmp::{Ordering, Reverse},
+    collections::HashMap,
+    fmt::Display,
+};
 
 use crate::common::Lexer;
 
@@ -34,13 +38,19 @@ fn puzzle_common(source: &str, include_jokers: bool) -> usize {
 
 fn parse_hand(lexer: &mut Lexer, include_jokers: bool) -> Option<(Hand, usize)> {
     let mut cards = [Card::Two; 5];
-    
+
     for card in cards.iter_mut() {
         *card = match lexer.advance()? {
             'A' => Card::Ace,
             'K' => Card::King,
             'Q' => Card::Queen,
-            'J' => if include_jokers { Card::Joker } else { Card::Jack },
+            'J' => {
+                if include_jokers {
+                    Card::Joker
+                } else {
+                    Card::Jack
+                }
+            }
             'T' => Card::Ten,
             '9' => Card::Nine,
             '8' => Card::Eight,
@@ -53,12 +63,12 @@ fn parse_hand(lexer: &mut Lexer, include_jokers: bool) -> Option<(Hand, usize)> 
             _ => return None,
         }
     }
-    
+
     let hand = Hand { cards };
     lexer.skip_whitespace();
-    
+
     let bid = lexer.parse_int()?;
-    
+
     Some((hand, bid))
 }
 
@@ -118,7 +128,7 @@ impl Display for Hand {
             };
             f.write_str(str)?;
         }
-        
+
         Ok(())
     }
 }
@@ -126,36 +136,32 @@ impl Display for Hand {
 impl Hand {
     fn get_type(&self) -> HandType {
         let mut card_counts: HashMap<Card, u8> = HashMap::new();
-        
+
         for card in self.cards {
-            let count = card_counts
-                .entry(card)
-                .or_default();
+            let count = card_counts.entry(card).or_default();
             *count += 1;
         }
-        
+
         if let Some(&value) = card_counts.get(&Card::Joker) {
             if value == 5 {
                 return HandType::FiveOfAKind;
             }
-            
+
             let highest_value = card_counts
                 .iter_mut()
                 .filter_map(|(k, v)| (*k != Card::Joker).then_some(v))
                 .max()
                 .unwrap();
-            
+
             *highest_value += value;
-            
+
             card_counts.remove(&Card::Joker);
         }
-        
-        let mut card_counts = card_counts
-            .into_values()
-            .collect::<Vec<_>>();
-        
+
+        let mut card_counts = card_counts.into_values().collect::<Vec<_>>();
+
         card_counts.sort_by_key(|c| Reverse(*c));
-        
+
         match card_counts.as_slice() {
             [5] => HandType::FiveOfAKind,
             [4, 1] => HandType::FourOfAKind,

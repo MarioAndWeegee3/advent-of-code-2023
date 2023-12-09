@@ -6,6 +6,8 @@ mod day_4;
 mod day_5;
 mod day_6;
 mod day_7;
+mod day_8;
+mod day_9;
 
 use std::env::args;
 use std::fs::read_to_string;
@@ -18,6 +20,8 @@ static PUZZLES: &[[fn(&str) -> usize; 2]] = &[
     [day_5::puzzle_1, day_5::puzzle_2],
     [day_6::puzzle_1, day_6::puzzle_2],
     [day_7::puzzle_1, day_7::puzzle_2],
+    [day_8::puzzle_1, day_8::puzzle_2],
+    [day_9::puzzle_1, day_9::puzzle_2],
 ];
 
 fn main() {
@@ -27,7 +31,7 @@ fn main() {
 
     let part = args[1].parse::<usize>().unwrap();
 
-    let input = read_to_string(format!("input/{day}-{part}.txt")).unwrap();
+    let input = read_to_string(format!("input/{day}.txt")).unwrap();
 
     let puzzle = PUZZLES[day - 1][part - 1];
 

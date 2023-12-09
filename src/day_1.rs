@@ -1,6 +1,5 @@
 use crate::common::Lexer;
 
-
 pub fn puzzle_1(input: &str) -> usize {
     let mut result = 0;
 
@@ -58,10 +57,10 @@ pub fn puzzle_2(input: &str) -> usize {
                     '0'..='9' => {
                         self.advance();
                         (c as u8) - b'0'
-                    },
+                    }
                     _ => {
                         let rest = self.rest();
-                        
+
                         for (digit, value) in DIGITS.iter().copied() {
                             if rest.starts_with(digit) {
                                 self.advance();
@@ -72,7 +71,7 @@ pub fn puzzle_2(input: &str) -> usize {
                         self.advance();
                         continue;
                     }
-                })
+                });
             }
         }
     }

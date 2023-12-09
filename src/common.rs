@@ -21,24 +21,24 @@ impl<'l> Lexer<'l> {
         self.index += c.len_utf8();
         Some(c)
     }
-    
+
     #[must_use]
     pub fn advance_matches(&mut self, text: &str) -> Option<&'l str> {
         if self.rest().starts_with(text) {
             let start = self.index;
             self.index += text.len();
             let range = start..self.index;
-            
+
             Some(&self.source[range])
         } else {
             None
         }
     }
-    
+
     pub fn rest(&self) -> &'l str {
         &self.source[self.index..]
     }
-    
+
     pub fn skip_whitespace(&mut self) {
         while let Some(c) = self.peek() {
             if c.is_whitespace() {
@@ -48,7 +48,7 @@ impl<'l> Lexer<'l> {
             }
         }
     }
-    
+
     pub fn parse_word(&mut self) -> Option<&'l str> {
         let start = self.index;
 
@@ -69,9 +69,29 @@ impl<'l> Lexer<'l> {
         Some(&self.source[start..end])
     }
 
+    pub fn parse_signed_int(&mut self) -> Option<isize> {
+        let c = self.peek()?;
+
+        let sign = match c {
+            '-' => {
+                self.advance();
+                -1
+            },
+            '+' => {
+                self.advance();
+                1
+            }
+            _ => 1
+        };
+
+        let unsigned = self.parse_int()?;
+
+        Some((unsigned as isize) * sign)
+    }
+
     pub fn parse_int(&mut self) -> Option<usize> {
         let start = self.index;
-        
+
         while let Some(c) = self.peek() {
             if c.is_ascii_digit() {
                 self.advance();
@@ -79,12 +99,12 @@ impl<'l> Lexer<'l> {
                 break;
             }
         }
-        
+
         let end = self.index;
         if start == end {
             return None;
         }
-        
+
         let text = &self.source[start..end];
         text.parse().ok()
     }

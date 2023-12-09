@@ -35,9 +35,9 @@ pub fn puzzle_2(input: &str) -> usize {
 
     lexer.advance_matches("seeds:").unwrap();
     lexer.skip_whitespace();
-    
+
     let mut seed_ranges = Vec::new();
-    
+
     while let Some(start) = lexer.parse_int() {
         lexer.skip_whitespace();
         let len = lexer.parse_int().unwrap();
@@ -45,15 +45,15 @@ pub fn puzzle_2(input: &str) -> usize {
         let range = start..start + len;
         seed_ranges.push(range);
     }
-    
+
     let seeds = seed_ranges.into_par_iter().flatten();
-    
+
     let mut maps = Vec::new();
 
     while lexer.peek().is_some() {
         maps.push(Map::parse(&mut lexer).unwrap());
     }
-    
+
     seeds
         .map(|seed| maps.iter().fold(seed, |value, map| map.convert(value)))
         .min()
@@ -109,9 +109,7 @@ impl Map {
             mappings.push(mapping);
         }
 
-        Some(Map {
-            mappings,
-        })
+        Some(Map { mappings })
     }
 
     fn convert(&self, value: usize) -> usize {

@@ -9,7 +9,7 @@ pub fn puzzle_1(input: &str) -> usize {
 
     for line in input.lines() {
         let game = parse_game(line);
-        
+
         let mut valid = true;
 
         for set in game.sets.iter() {
@@ -29,33 +29,33 @@ pub fn puzzle_1(input: &str) -> usize {
 
 pub fn puzzle_2(input: &str) -> usize {
     let mut result = 0;
-    
+
     for line in input.lines() {
         let game = parse_game(line);
-        
+
         let mut min_red = 0;
         let mut min_green = 0;
         let mut min_blue = 0;
-        
+
         for set in game.sets.iter() {
             if set.red > min_red {
                 min_red = set.red;
             }
-            
+
             if set.green > min_green {
                 min_green = set.green;
             }
-            
+
             if set.blue > min_blue {
                 min_blue = set.blue;
             }
         }
-        
+
         let power = min_red * min_blue * min_green;
-        
+
         result += power;
     }
-    
+
     result
 }
 
@@ -124,6 +124,6 @@ fn parse_game(line: &str) -> Game {
 
         break;
     }
-    
+
     game
 }
